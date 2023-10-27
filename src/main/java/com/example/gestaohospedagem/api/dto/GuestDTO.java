@@ -11,5 +11,4 @@ public class GuestDTO {
 	private String name;
 	private String cpf;
 	private String phone;
-	private String status;
 }

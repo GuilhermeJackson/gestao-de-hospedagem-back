@@ -1,5 +1,8 @@
 package com.example.gestaohospedagem.service.impl;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,20 @@ public class GuestServiceImpl implements GuestService{
 			throw new RuntimeException("Nome do hóspede vazio!");
 		}
 		return guestRepository.save(guest);
+	}
+
+	@Override
+	public Optional<Guest> findById(Long id) {
+		return guestRepository.findById(id);
+	}
+
+	@Override
+	public List<Guest> getListGuest() {
+		List<Guest> guests = guestRepository.findAll();
+		if (guests.isEmpty()) {
+			throw new RuntimeException("Lista de hóspedes vazia!");
+		}
+		return guests;
 	}
 
 }

@@ -1,22 +1,20 @@
 package com.example.gestaohospedagem.model.entity;
 
-import com.example.gestaohospedagem.model.enums.Status;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Guest {
 	@Id
 	@Column(name = "id")
@@ -31,11 +29,5 @@ public class Guest {
 	
 	@Column(name = "phone")
 	private String phone;
-	
-	@Column(name = "status")
-	@Enumerated(value = EnumType.STRING)
-	private Status status;
-	
-
 }
 

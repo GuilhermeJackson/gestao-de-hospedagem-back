@@ -1,7 +1,10 @@
-package com.example.gestaohospedagem.api.resource;
+package com.example.gestaohospedagem.api.controller;
+
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.gestaohospedagem.api.dto.GuestDTO;
 import com.example.gestaohospedagem.model.entity.Guest;
-import com.example.gestaohospedagem.model.enums.Status;
 import com.example.gestaohospedagem.service.GuestService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,9 +19,19 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/hospede")
 @RequiredArgsConstructor
-public class GuestResource {
+public class GuestController {
 	
 	private final GuestService guestService;
+	
+	@GetMapping
+	private ResponseEntity listGuest() {
+		try {
+			List<Guest> listGuest = guestService.getListGuest();
+			return ResponseEntity.ok(listGuest);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 	
 	@PostMapping
 	private ResponseEntity<Object> cadastrarHospede(@RequestBody GuestDTO dto ) {
@@ -28,7 +40,6 @@ public class GuestResource {
 					.name(dto.getName())
 					.cpf(dto.getCpf())
 					.phone(dto.getPhone())
-					.status(Status.valueOf(dto.getStatus()))
 					.build();
 			
 			guestService.salvar(guest);
