@@ -3,24 +3,31 @@ package com.example.gestaohospedagem.service.impl;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Service;
 
 import com.example.gestaohospedagem.model.entity.Guest;
 import com.example.gestaohospedagem.repository.GuestRepository;
 import com.example.gestaohospedagem.service.GuestService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GuestServiceImpl implements GuestService{
 	
-	@Autowired
 	private GuestRepository guestRepository;
+	
+	public GuestServiceImpl(GuestRepository repository) {
+		super();
+		this.guestRepository = repository;
+	}
 
 	@Override
 	public Guest salvar(Guest guest) {
-		if(guest.getName() == null) {
-			throw new RuntimeException("Nome do hóspede vazio!");
-		}
+		validateName(guest.getName());
+		validateCpf(guest.getCpf());
+		validatePhone(guest.getPhone());
 		return guestRepository.save(guest);
 	}
 
@@ -37,5 +44,50 @@ public class GuestServiceImpl implements GuestService{
 		}
 		return guests;
 	}
+	
+	@Override
+	public void validateCpf(String cpf) {
+		String validateCpf= cpf.trim();
+		boolean isExist = guestRepository.existsByCpf(validateCpf);
+		if(isExist) {
+			throw new RuntimeException("Já existe um usuário cadastrado com esse CPF");
+		}
+		if(validateCpf.isEmpty()) {
+			throw new RuntimeException("CPF está vazio");
+		}
+	}
+	
+	@Override
+	public void validateName(String name) {
+		String validateName = name.trim();
+		boolean isExist = guestRepository.existsByName(validateName);
+		if(isExist) {
+			throw new RuntimeException("Já existe um usuário cadastrado com esse nome");
+		}
+		if(validateName.isEmpty()) {
+			throw new RuntimeException("Nome está vazio");
+		}
+	}
 
+	@Override
+	public void validatePhone(String phone) {
+		boolean isExist = guestRepository.existsByPhone(phone);
+		if(isExist) {
+			throw new RuntimeException("Telefone já cadastrado!");
+		}
+		if(phone.isEmpty()) {
+			throw new RuntimeException("Telefone está vazio");
+		}
+		
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Guest> find(Guest guestFilter) {
+		Example<Guest> example = Example.of(guestFilter, 
+				ExampleMatcher.matching()
+				.withIgnoreCase()
+				.withStringMatcher(StringMatcher.CONTAINING));
+		return guestRepository.findAll(example);
+	}	
 }

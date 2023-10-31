@@ -1,13 +1,10 @@
 package com.example.gestaohospedagem.model.entity;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,11 +13,13 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Reservation {
 	
 	@Id
@@ -34,11 +33,7 @@ public class Reservation {
 	@Column(name = "checkout")
 	private LocalDateTime  checkout;
 	
-	@Column(name = "isGarage")
-	private boolean isGarage;
-	
-	@ManyToOne
-	@JoinColumn(name = "id_guest")
-	private Guest id_guest;
+	@ManyToOne(targetEntity = Guest.class, fetch = FetchType.EAGER)
+	@JoinColumn(name = "id_guest", referencedColumnName = "id")
+	private Guest guest;
 }
-

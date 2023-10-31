@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GuestDTO {
+public class GuestFilterDTO {
 	private String name;
 	private String cpf;
 	private String phone;

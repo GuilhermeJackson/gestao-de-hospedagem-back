@@ -6,8 +6,7 @@ import lombok.Data;
 
 @Data
 public class ReservationDTO {
-	    private LocalDateTime  checkin;
-	    private LocalDateTime  checkout;
+	    private LocalDateTime checkin;
+	    private LocalDateTime checkout;
 	    private Long id_guest;
-	    private boolean isGarage;
 }

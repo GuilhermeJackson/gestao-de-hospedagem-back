@@ -11,4 +11,12 @@ public interface GuestService {
 	List<Guest> getListGuest();
 	
 	Optional<Guest> findById(Long id);
+
+	void validateName(String name);
+	
+	void validateCpf(String cpf);
+	
+	void validatePhone(String phone);
+	
+	List<Guest> find(Guest guest);
 }
