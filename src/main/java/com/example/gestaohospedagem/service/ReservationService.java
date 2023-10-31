@@ -9,6 +9,6 @@ public interface ReservationService {
 	Reservation salvar(Reservation reservation);
 	
 	Optional<Reservation> findById(Long id);
-
-	List<Reservation> findByGuestId(Long id);
+	
+	List<Reservation> findAllReservationsWithGuest();
 }

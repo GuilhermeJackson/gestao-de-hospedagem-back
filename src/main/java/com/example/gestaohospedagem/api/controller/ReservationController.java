@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +25,10 @@ public class ReservationController {
 	private final ReservationService reservationService;
 	private final GuestService guestService;
 	
-	@GetMapping("{id}")
-	public ResponseEntity<Object> getReserveById(@PathVariable Long id) {
+	@GetMapping
+	public ResponseEntity<Object> getReserveById() {
 	    try {
-	        List<Reservation> reservations = reservationService.findByGuestId(id);
+	    	List<Reservation> reservations = reservationService.findAllReservationsWithGuest();
 	        
 	        if (reservations != null) {
 	            return new ResponseEntity<>(reservations, HttpStatus.OK);
@@ -48,8 +47,8 @@ public class ReservationController {
 			Guest guest = guestService.findById(dto.getId_guest())
 					.orElseThrow(() ->  new Exception("Usuário não encontrado para o ID informado!"));
 			Reservation reservation = Reservation.builder()
-					.checkin(dto.getCheckin())
-					.checkout(dto.getCheckout())
+					.prevCheckin(dto.getPrevCheckin())
+					.prevCheckout(dto.getPrevCheckout())
 					.guest(guest)
 					.build();
 			

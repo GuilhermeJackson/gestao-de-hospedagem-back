@@ -27,6 +27,12 @@ public class Reservation {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column(name = "prev_checkin")
+	private LocalDateTime prevCheckin;
+	
+	@Column(name = "prev_checkout")
+	private LocalDateTime prevCheckout;
+	
 	@Column(name = "checkin")
 	private LocalDateTime  checkin;
 	

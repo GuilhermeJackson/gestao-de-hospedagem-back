@@ -32,10 +32,7 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	public List<Reservation> findByGuestId(Long id) {
-		return reservationRepository.findByGuestId(id);
+	public List<Reservation> findAllReservationsWithGuest() {
+		 return reservationRepository.findAllReservationsWithGuest();
 	}
-
-
-
 }

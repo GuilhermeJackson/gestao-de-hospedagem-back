@@ -62,13 +62,5 @@ public class GuestController {
 		}
 	}
 	
-//	@GetMapping
-//	private ResponseEntity listGuest() {
-//		try {
-//			List<Guest> listGuest = guestService.getListGuest();
-//			return ResponseEntity.ok(listGuest);
-//		} catch (Exception e) {
-//			return ResponseEntity.badRequest().body(e.getMessage());
-//		}
-//	}
+	
 }
