@@ -1,6 +1,11 @@
 package com.example.gestaohospedagem.service;
 
 import org.junit.Test;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import org.assertj.core.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -36,7 +41,7 @@ public class GusetServiceTest {
 		 Assertions.assertThat(guestSalvo).isNotNull();
 		 Assertions.assertThat(guestSalvo.getId()).isEqualTo(1l);
 		 Assertions.assertThat(guestSalvo.getName()).isEqualTo("Pedro Pedroso");
-		 Assertions.assertThat(guestSalvo.getCpf()).isEqualTo("000.000.000.21");
+		 Assertions.assertThat(guestSalvo.getCpf()).isEqualTo("00000000021");
 		 Assertions.assertThat(guestSalvo.getPhone()).isEqualTo("47 999999999");
 	}
 	
@@ -51,11 +56,56 @@ public class GusetServiceTest {
 		Mockito.verify(repository, Mockito.never()).save(guest);
 	}
 	
+	@Test(expected = RuntimeException.class)
+	public void shouldNotSaveUserWithEmptyName() {
+	    Guest guest = Guest.builder().name("").cpf("12345678901").phone("1234567890").build();
+	    service.salvar(guest);
+
+	    Mockito.verify(repository, Mockito.never()).save(guest);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotSaveUserWithInvalidCPF() {
+	    Guest guest = Guest.builder().name("John Doe").cpf("1234567890A").phone("1234567890").build();
+	    service.salvar(guest);
+
+	    Mockito.verify(repository, Mockito.never()).save(guest);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotSaveUserWithEmptyPhone() {
+	    Guest guest = Guest.builder().name("John Doe").cpf("12345678901").phone("").build();
+	    service.salvar(guest);
+
+	    Mockito.verify(repository, Mockito.never()).save(guest);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotSaveUserWithInvalidCPFLength() {
+	    Guest guest = Guest.builder().name("John Doe").cpf("132345678901").phone("1234567890").build();
+	    service.salvar(guest);
+
+	    Mockito.verify(repository, Mockito.never()).save(guest);
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldNotSaveUserWithExistingCPF() {
+	    String existingCPF = "00000000021";
+	    Guest existingGuest = createNewGuest();
+
+	    Mockito.when(repository.existsByCpf(existingCPF)).thenReturn(true);
+
+	    Guest newGuest = Guest.builder().name("John Doe").cpf(existingCPF).phone("1234567890").build();
+	    service.salvar(newGuest);
+
+	    Mockito.verify(repository, Mockito.never()).save(newGuest);
+	}
+	
 	private Guest createNewGuest() {
 	    Guest guest = Guest.builder()
 	            .id(1l)
 	            .name("Pedro Pedroso")
-	            .cpf("000.000.000.21")
+	            .cpf("00000000021")
 	            .phone("47 999999999")
 	            .build();
 	    return guest;

@@ -55,6 +55,14 @@ public class GuestServiceImpl implements GuestService{
 		if(validateCpf.isEmpty()) {
 			throw new RuntimeException("CPF está vazio");
 		}
+		if(validateCpf.length() != 11) {
+			throw new RuntimeException(
+					"CPF inválido. Preencha o campo com somente números e até 11 caracteres"
+			);
+		}
+	    if (!validateCpf.matches("[0-9]+")) {
+	        throw new RuntimeException("CPF deve conter apenas números.");
+	    }
 	}
 	
 	@Override
