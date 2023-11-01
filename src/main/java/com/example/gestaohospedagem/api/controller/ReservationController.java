@@ -22,13 +22,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/reserva")
 @RequiredArgsConstructor
 public class ReservationController {
-	private final ReservationService reservationService;
+	private final ReservationService service;
 	private final GuestService guestService;
 	
 	@GetMapping
 	public ResponseEntity<Object> getReserveById() {
 	    try {
-	    	List<Reservation> reservations = reservationService.findAllReservationsWithGuest();
+	    	List<Reservation> reservations = service.findAllReservationsWithGuest();
 	        
 	        if (reservations != null) {
 	            return new ResponseEntity<>(reservations, HttpStatus.OK);
@@ -38,6 +38,20 @@ public class ReservationController {
 	    } catch (Exception e) {
 	        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 	    }
+	}
+	
+	@GetMapping("/atendente")
+	public ResponseEntity<Object> getReserveWithoutCheckin() {
+		try {
+			List<Reservation> reservations = service.findAllReservationsWithGuest();
+			if (reservations != null) {
+	            return new ResponseEntity<>(reservations, HttpStatus.OK);
+	        } else {
+	            return new ResponseEntity<>("Nenhuma hóspede pode dar o checkin", HttpStatus.NOT_FOUND);
+	        }
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	
@@ -53,7 +67,7 @@ public class ReservationController {
 					.guest(guest)
 					.build();
 			
-			reservationService.salvar(reservation);
+			service.salvar(reservation);
 			return new ResponseEntity<Object>(reservation, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

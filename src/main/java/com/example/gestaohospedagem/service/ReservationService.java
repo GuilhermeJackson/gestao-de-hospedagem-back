@@ -11,4 +11,6 @@ public interface ReservationService {
 	Optional<Reservation> findById(Long id);
 	
 	List<Reservation> findAllReservationsWithGuest();
+	
+	List<Reservation> findAllWithoutCheckin();
 }
