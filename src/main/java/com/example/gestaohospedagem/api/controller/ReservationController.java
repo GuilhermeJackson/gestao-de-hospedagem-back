@@ -49,6 +49,7 @@ public class ReservationController {
 			Reservation reservation = Reservation.builder()
 					.prevCheckin(dto.getPrevCheckin())
 					.prevCheckout(dto.getPrevCheckout())
+					.isGarage(dto.isGarage())
 					.guest(guest)
 					.build();
 			

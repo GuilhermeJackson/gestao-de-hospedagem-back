@@ -9,4 +9,5 @@ public class ReservationDTO {
 	    private LocalDateTime prevCheckin;
 	    private LocalDateTime prevCheckout;
 	    private Long id_guest;
+	    private boolean isGarage;
 }

@@ -16,9 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.gestaohospedagem.model.entity.Reservation;
-import com.example.gestaohospedagem.repository.GuestRepository;
 import com.example.gestaohospedagem.repository.ReservationRepository;
-import com.example.gestaohospedagem.service.impl.GuestServiceImpl;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")

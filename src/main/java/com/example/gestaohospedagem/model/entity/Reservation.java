@@ -39,6 +39,9 @@ public class Reservation {
 	@Column(name = "checkout")
 	private LocalDateTime  checkout;
 	
+	@Column(name = "isGarage")
+	private boolean  isGarage;
+	
 	@ManyToOne(targetEntity = Guest.class, fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_guest", referencedColumnName = "id")
 	private Guest guest;
