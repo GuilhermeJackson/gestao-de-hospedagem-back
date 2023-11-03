@@ -1,6 +1,8 @@
 package com.example.gestaohospedagem.api.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.gestaohospedagem.api.dto.ReservationDTO;
+import com.example.gestaohospedagem.api.dto.ReservationSaveCheckinDTO;
 import com.example.gestaohospedagem.model.entity.Guest;
 import com.example.gestaohospedagem.model.entity.Reservation;
 import com.example.gestaohospedagem.service.GuestService;
@@ -53,7 +56,6 @@ public class ReservationController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
-
 	
 	@PostMapping
 	private ResponseEntity<Object> salvar(@RequestBody ReservationDTO dto) {
@@ -69,6 +71,27 @@ public class ReservationController {
 			
 			service.salvar(reservation);
 			return new ResponseEntity<Object>(reservation, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/atendente")
+	private ResponseEntity<Object> salvar(@RequestBody ReservationSaveCheckinDTO dto) {
+		try {
+			Reservation reserve = service.findById(dto.getId())
+					.orElseThrow(() ->  new Exception("Usuário não encontrado para o ID informado!"));			
+			LocalDateTime dateNow = LocalDateTime.now();
+			
+			if(reserve.getCheckin() == null && reserve.getCheckout() == null) {
+				reserve.setCheckin(dateNow);
+			}
+			if(reserve.getCheckin() != null && reserve.getCheckout() == null) {
+				reserve.setCheckout(dateNow);
+			}
+			
+			service.salvar(reserve);
+			return new ResponseEntity<Object>(reserve, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
