@@ -83,12 +83,14 @@ public class ReservationController {
 					.orElseThrow(() ->  new Exception("Usuário não encontrado para o ID informado!"));			
 			LocalDateTime dateNow = LocalDateTime.now();
 			
-			if(reserve.getCheckin() == null && reserve.getCheckout() == null) {
-				reserve.setCheckin(dateNow);
-			}
 			if(reserve.getCheckin() != null && reserve.getCheckout() == null) {
 				reserve.setCheckout(dateNow);
 			}
+			
+			if(reserve.getCheckin() == null && reserve.getCheckout() == null) {
+				reserve.setCheckin(dateNow);
+			}
+			
 			
 			service.salvar(reserve);
 			return new ResponseEntity<Object>(reserve, HttpStatus.CREATED);
