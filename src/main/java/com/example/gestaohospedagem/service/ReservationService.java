@@ -13,4 +13,8 @@ public interface ReservationService {
 	List<Reservation> findAllReservationsWithGuest();
 	
 	List<Reservation> findAllWithoutCheckin();
+	
+	List<Reservation> findAllWithoutCheckinAndWithGuest();
+	
+	List<Reservation> findAllWithoutCheckoutAndWithGuest();
 }

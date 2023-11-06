@@ -40,4 +40,14 @@ public class ReservationServiceImpl implements ReservationService {
 	public List<Reservation> findAllWithoutCheckin() {
 		return repository.findAllWithoutCheckin();
 	}
+
+	@Override
+	public List<Reservation> findAllWithoutCheckinAndWithGuest() {
+		return repository.findAllWithoutCheckinAndWithGuest();
+	}
+
+	@Override
+	public List<Reservation> findAllWithoutCheckoutAndWithGuest() {
+		return repository.findAllWithoutCheckoutAndWithGuest();
+	}
 }

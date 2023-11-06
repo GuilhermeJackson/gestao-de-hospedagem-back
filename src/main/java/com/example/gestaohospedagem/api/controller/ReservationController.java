@@ -2,7 +2,6 @@ package com.example.gestaohospedagem.api.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,22 +42,8 @@ public class ReservationController {
 	    }
 	}
 	
-	@GetMapping("/atendente")
-	public ResponseEntity<Object> getReserveWithoutCheckin() {
-		try {
-			List<Reservation> reservations = service.findAllReservationsWithGuest();
-			if (reservations != null) {
-	            return new ResponseEntity<>(reservations, HttpStatus.OK);
-	        } else {
-	            return new ResponseEntity<>("Nenhuma hóspede pode dar o checkin", HttpStatus.NOT_FOUND);
-	        }
-		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	}
-	
 	@PostMapping
-	private ResponseEntity<Object> salvar(@RequestBody ReservationDTO dto) {
+	private ResponseEntity<Object> createNewReserve(@RequestBody ReservationDTO dto) {
 		try {
 			Guest guest = guestService.findById(dto.getId_guest())
 					.orElseThrow(() ->  new Exception("Usuário não encontrado para o ID informado!"));
@@ -75,22 +60,65 @@ public class ReservationController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
+	
+	@GetMapping("/atendente/checkin")
+	public ResponseEntity<Object> getReserveWithoutCheckin() {
+		try {
+			List<Reservation> reservations = service.findAllWithoutCheckinAndWithGuest();
+			if (reservations != null) {
+	            return new ResponseEntity<>(reservations, HttpStatus.OK);
+	        } else {
+	            return new ResponseEntity<>("Nenhuma hóspede pode dar o checkin", HttpStatus.NOT_FOUND);
+	        }
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/atendente/checkout")
+	public ResponseEntity<Object> getReserveWithoutCheckout() {
+		try {
+			List<Reservation> reservations = service.findAllWithoutCheckoutAndWithGuest();
+			if (reservations != null) {
+	            return new ResponseEntity<>(reservations, HttpStatus.OK);
+	        } else {
+	            return new ResponseEntity<>("Nenhuma hóspede pode dar o checkout", HttpStatus.NOT_FOUND);
+	        }
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
 
-	@PostMapping("/atendente")
-	private ResponseEntity<Object> salvar(@RequestBody ReservationSaveCheckinDTO dto) {
+	@PostMapping("/atendente/checkin")
+	private ResponseEntity<Object> saveCheckinGuest(@RequestBody ReservationSaveCheckinDTO dto) {
 		try {
 			Reservation reserve = service.findById(dto.getId())
-					.orElseThrow(() ->  new Exception("Usuário não encontrado para o ID informado!"));			
-			LocalDateTime dateNow = LocalDateTime.now();
+					.orElseThrow(() ->  new Exception("Usuário não encontrado para o ID informado!"));
 			
-			if(reserve.getCheckin() != null && reserve.getCheckout() == null) {
-				reserve.setCheckout(dateNow);
-			}
+			LocalDateTime dateNow = LocalDateTime.now();
 			
 			if(reserve.getCheckin() == null && reserve.getCheckout() == null) {
 				reserve.setCheckin(dateNow);
 			}
 			
+			service.salvar(reserve);
+			return new ResponseEntity<Object>(reserve, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PostMapping("/atendente/checkout")
+	private ResponseEntity<Object> saveCheckoutGuest(@RequestBody ReservationSaveCheckinDTO dto) {
+		try {
+			Reservation reserve = service.findById(dto.getId())
+					.orElseThrow(() ->  new Exception("Usuário não encontrado para o ID informado!"));
+			
+			LocalDateTime dateNow = LocalDateTime.now();
+			
+			if(reserve.getCheckin() != null && reserve.getCheckout() == null) {
+				reserve.setCheckout(dateNow);
+			}
 			
 			service.salvar(reserve);
 			return new ResponseEntity<Object>(reserve, HttpStatus.CREATED);

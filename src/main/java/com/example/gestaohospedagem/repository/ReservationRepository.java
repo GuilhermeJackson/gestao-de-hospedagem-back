@@ -17,4 +17,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 	 @Query("SELECT r FROM Reservation r WHERE r.checkin IS NULL")
 		List<Reservation> findAllWithoutCheckin();
+	 
+	 @Query("SELECT r FROM Reservation r LEFT JOIN FETCH r.guest WHERE r.checkin IS NULL")
+		List<Reservation> findAllWithoutCheckinAndWithGuest();
+
+	 @Query("SELECT r FROM Reservation r LEFT JOIN FETCH r.guest WHERE r.checkout IS NULL")
+		List<Reservation> findAllWithoutCheckoutAndWithGuest();
 }
