@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reservation {
+public class Reserve {
 	
 	@Id
 	@Column(name = "id")

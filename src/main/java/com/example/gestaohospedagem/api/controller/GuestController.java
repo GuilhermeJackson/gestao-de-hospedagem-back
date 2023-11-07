@@ -44,7 +44,6 @@ public class GuestController {
 		}		
 	}
 	
-	
 	@PostMapping
 	private ResponseEntity<Object> cadastrarHospede(@RequestBody GuestDTO dto ) {
 		try {

@@ -14,26 +14,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.gestaohospedagem.api.dto.ReservationDTO;
 import com.example.gestaohospedagem.api.dto.ReservationSaveCheckinDTO;
 import com.example.gestaohospedagem.model.entity.Guest;
-import com.example.gestaohospedagem.model.entity.Reservation;
+import com.example.gestaohospedagem.model.entity.Reserve;
 import com.example.gestaohospedagem.service.GuestService;
-import com.example.gestaohospedagem.service.ReservationService;
+import com.example.gestaohospedagem.service.ReserveService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/reserva")
 @RequiredArgsConstructor
-public class ReservationController {
-	private final ReservationService service;
+public class ReserveController {
+	private final ReserveService service;
 	private final GuestService guestService;
 	
 	@GetMapping
 	public ResponseEntity<Object> getReserveById() {
 	    try {
-	    	List<Reservation> reservations = service.findAllReservationsWithGuest();
+	    	List<Reserve> reserves = service.findAllReservationsWithGuest();
 	        
-	        if (reservations != null) {
-	            return new ResponseEntity<>(reservations, HttpStatus.OK);
+	        if (reserves != null) {
+	            return new ResponseEntity<>(reserves, HttpStatus.OK);
 	        } else {
 	            return new ResponseEntity<>("Reserva não encontrada", HttpStatus.NOT_FOUND);
 	        }
@@ -47,15 +47,15 @@ public class ReservationController {
 		try {
 			Guest guest = guestService.findById(dto.getId_guest())
 					.orElseThrow(() ->  new Exception("Usuário não encontrado para o ID informado!"));
-			Reservation reservation = Reservation.builder()
+			Reserve reserve = Reserve.builder()
 					.prevCheckin(dto.getPrevCheckin())
 					.prevCheckout(dto.getPrevCheckout())
 					.isGarage(dto.isGarage())
 					.guest(guest)
 					.build();
 			
-			service.salvar(reservation);
-			return new ResponseEntity<Object>(reservation, HttpStatus.CREATED);
+			service.saveNewReserve(reserve);
+			return new ResponseEntity<Object>(reserve, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -64,9 +64,9 @@ public class ReservationController {
 	@GetMapping("/atendente/checkin")
 	public ResponseEntity<Object> getReserveWithoutCheckin() {
 		try {
-			List<Reservation> reservations = service.findAllWithoutCheckinAndWithGuest();
-			if (reservations != null) {
-	            return new ResponseEntity<>(reservations, HttpStatus.OK);
+			List<Reserve> reserves = service.findAllWithoutCheckinAndWithGuest();
+			if (reserves != null) {
+	            return new ResponseEntity<>(reserves, HttpStatus.OK);
 	        } else {
 	            return new ResponseEntity<>("Nenhuma hóspede pode dar o checkin", HttpStatus.NOT_FOUND);
 	        }
@@ -78,9 +78,9 @@ public class ReservationController {
 	@GetMapping("/atendente/checkout")
 	public ResponseEntity<Object> getReserveWithoutCheckout() {
 		try {
-			List<Reservation> reservations = service.findAllWithoutCheckoutAndWithGuest();
-			if (reservations != null) {
-	            return new ResponseEntity<>(reservations, HttpStatus.OK);
+			List<Reserve> reserves = service.findAllWithoutCheckoutAndWithGuest();
+			if (reserves != null) {
+	            return new ResponseEntity<>(reserves, HttpStatus.OK);
 	        } else {
 	            return new ResponseEntity<>("Nenhuma hóspede pode dar o checkout", HttpStatus.NOT_FOUND);
 	        }
@@ -92,16 +92,13 @@ public class ReservationController {
 	@PostMapping("/atendente/checkin")
 	private ResponseEntity<Object> saveCheckinGuest(@RequestBody ReservationSaveCheckinDTO dto) {
 		try {
-			Reservation reserve = service.findById(dto.getId())
+			Reserve reserve = service.findById(dto.getId())
 					.orElseThrow(() ->  new Exception("Usuário não encontrado para o ID informado!"));
 			
 			LocalDateTime dateNow = LocalDateTime.now();
+			reserve.setCheckin(dateNow);
 			
-			if(reserve.getCheckin() == null && reserve.getCheckout() == null) {
-				reserve.setCheckin(dateNow);
-			}
-			
-			service.salvar(reserve);
+			service.saveCheckin(reserve);
 			return new ResponseEntity<Object>(reserve, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
@@ -111,7 +108,7 @@ public class ReservationController {
 	@PostMapping("/atendente/checkout")
 	private ResponseEntity<Object> saveCheckoutGuest(@RequestBody ReservationSaveCheckinDTO dto) {
 		try {
-			Reservation reserve = service.findById(dto.getId())
+			Reserve reserve = service.findById(dto.getId())
 					.orElseThrow(() ->  new Exception("Usuário não encontrado para o ID informado!"));
 			
 			LocalDateTime dateNow = LocalDateTime.now();
@@ -120,7 +117,7 @@ public class ReservationController {
 				reserve.setCheckout(dateNow);
 			}
 			
-			service.salvar(reserve);
+			service.saveNewReserve(reserve);
 			return new ResponseEntity<Object>(reserve, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

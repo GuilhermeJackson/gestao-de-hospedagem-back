@@ -15,58 +15,58 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.example.gestaohospedagem.model.entity.Reservation;
-import com.example.gestaohospedagem.repository.ReservationRepository;
+import com.example.gestaohospedagem.model.entity.Reserve;
+import com.example.gestaohospedagem.repository.ReserveRepository;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @SpringBootTest
 public class ReservationServiceTest {
 	@SpyBean
-	ReservationService service;
+	ReserveService service;
 	
 	@MockBean
-	ReservationRepository repository;
+	ReserveRepository repository;
 	
 	@Test
     public void shouldSaveReservation() {
-        Reservation reservation = createSampleReservation();
-        Mockito.when(repository.save(Mockito.any(Reservation.class))).thenReturn(reservation);
+        Reserve reserve = createSampleReservation();
+        Mockito.when(repository.save(Mockito.any(Reserve.class))).thenReturn(reserve);
 
-        Reservation savedReservation = service.salvar(reservation);
+        Reserve savedReservation = service.salvar(reserve);
 
         Assertions.assertThat(savedReservation).isNotNull();
         Assertions.assertThat(savedReservation.getId()).isEqualTo(1L);
-        Assertions.assertThat(savedReservation.getPrevCheckin()).isEqualTo(reservation.getPrevCheckin());
-        Assertions.assertThat(savedReservation.getPrevCheckout()).isEqualTo(reservation.getPrevCheckout());
-        Assertions.assertThat(savedReservation.getCheckin()).isEqualTo(reservation.getCheckin());
-        Assertions.assertThat(savedReservation.getCheckout()).isEqualTo(reservation.getCheckout());
+        Assertions.assertThat(savedReservation.getPrevCheckin()).isEqualTo(reserve.getPrevCheckin());
+        Assertions.assertThat(savedReservation.getPrevCheckout()).isEqualTo(reserve.getPrevCheckout());
+        Assertions.assertThat(savedReservation.getCheckin()).isEqualTo(reserve.getCheckin());
+        Assertions.assertThat(savedReservation.getCheckout()).isEqualTo(reserve.getCheckout());
     }
 
     @Test
     public void shouldFindReservationById() {
-        Reservation reservation = createSampleReservation();
-        Mockito.when(repository.findById(1L)).thenReturn(Optional.of(reservation));
+        Reserve reserve = createSampleReservation();
+        Mockito.when(repository.findById(1L)).thenReturn(Optional.of(reserve));
 
-        Optional<Reservation> foundReservation = service.findById(1L);
+        Optional<Reserve> foundReservation = service.findById(1L);
 
         Assertions.assertThat(foundReservation).isPresent();
-        Assertions.assertThat(foundReservation.get()).isEqualTo(reservation);
+        Assertions.assertThat(foundReservation.get()).isEqualTo(reserve);
     }
 
     @Test
     public void shouldFindAllReservationsWithGuest() {
-        List<Reservation> reservations = new ArrayList<>();
-        reservations.add(createSampleReservation());
-        reservations.add(createSampleReservation());
+        List<Reserve> reserves = new ArrayList<>();
+        reserves.add(createSampleReservation());
+        reserves.add(createSampleReservation());
 
-        Mockito.when(repository.findAllReservationsWithGuest()).thenReturn(reservations);
+        Mockito.when(repository.findAllReservationsWithGuest()).thenReturn(reserves);
 
-        List<Reservation> foundReservations = service.findAllReservationsWithGuest();
+        List<Reserve> foundReservations = service.findAllReservationsWithGuest();
 
         Assertions.assertThat(foundReservations).isNotNull();
         Assertions.assertThat(foundReservations).hasSize(2);
-        Assertions.assertThat(foundReservations).containsAll(reservations);
+        Assertions.assertThat(foundReservations).containsAll(reserves);
     }
     
     @Test(expected = RuntimeException.class)
@@ -94,17 +94,17 @@ public class ReservationServiceTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldFailToSaveReservationWithInvalidCheckinCheckout() {
-        Reservation reservation = Reservation.builder()
+        Reserve reserve = Reserve.builder()
                 .id(1L)
                 .prevCheckin(LocalDateTime.now())
                 .prevCheckout(LocalDateTime.now().minusDays(1))
                 .build();
-        Mockito.when(repository.save(Mockito.any(Reservation.class))).thenReturn(reservation);
-        service.salvar(reservation);
+        Mockito.when(repository.save(Mockito.any(Reserve.class))).thenReturn(reserve);
+        service.salvar(reserve);
     }
 
-    private Reservation createSampleReservation() {
-        return Reservation.builder()
+    private Reserve createSampleReservation() {
+        return Reserve.builder()
                 .id(1L)
                 .prevCheckin(LocalDateTime.now())
                 .prevCheckout(LocalDateTime.now().plusDays(1))
