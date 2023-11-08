@@ -22,7 +22,7 @@ public class ReserveServiceImpl implements ReserveService {
 	@Override
 	public Reserve saveNewReserve(Reserve reserve) {
 		if(reserve == null) {
-			throw new RuntimeException("Reserva está vazia!");
+			throw new ReserveException("Reserva está vazia!");
 		}
 		return repository.save(reserve);
 	}
