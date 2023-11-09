@@ -53,9 +53,7 @@ public class ReserveServiceImpl implements ReserveService {
 	@Override
 	public List<Reserve> findAllWithoutCheckoutAndWithGuest() {
 		List<Reserve> reserves = repository.findAllWithoutCheckoutAndWithGuest();
-		if(reserves.isEmpty()) {
-			throw new ReserveException("Lista de hópede vazia!");
-		}
+		
 		return reserves;
 	}
 

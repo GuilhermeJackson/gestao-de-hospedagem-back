@@ -18,6 +18,6 @@ public interface ReserveRepository extends JpaRepository<Reserve, Long> {
 	 @Query("SELECT r FROM Reserve r LEFT JOIN FETCH r.guest WHERE r.checkin IS NULL")
 		List<Reserve> findAllWithoutCheckinAndWithGuest();
 
-	 @Query("SELECT r FROM Reserve r LEFT JOIN FETCH r.guest WHERE r.checkout IS NULL")
+	 @Query("SELECT r FROM Reserve r LEFT JOIN r.guest WHERE r.checkin IS NOT NULL and r.checkout IS NULL")
 		List<Reserve> findAllWithoutCheckoutAndWithGuest();
 }
