@@ -33,7 +33,7 @@ public class ReservationServiceTest {
         Reserve reserve = createSampleReservation();
         Mockito.when(repository.save(Mockito.any(Reserve.class))).thenReturn(reserve);
 
-        Reserve savedReservation = service.salvar(reserve);
+        Reserve savedReservation = service.saveNewReserve(reserve);
 
         Assertions.assertThat(savedReservation).isNotNull();
         Assertions.assertThat(savedReservation.getId()).isEqualTo(1L);
@@ -71,7 +71,7 @@ public class ReservationServiceTest {
     
     @Test(expected = RuntimeException.class)
     public void shouldFailToSaveNullReservation() {
-        service.salvar(null);
+        service.saveNewReserve(null);
     }
 
     @Test(expected = RuntimeException.class)
@@ -100,7 +100,7 @@ public class ReservationServiceTest {
                 .prevCheckout(LocalDateTime.now().minusDays(1))
                 .build();
         Mockito.when(repository.save(Mockito.any(Reserve.class))).thenReturn(reserve);
-        service.salvar(reserve);
+        service.saveNewReserve(reserve);
     }
 
     private Reserve createSampleReservation() {
